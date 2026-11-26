@@ -1,0 +1,62 @@
+---
+title: "bayesian project"
+author: "Huby Youenn"
+date: "2026-11-23"
+output: html_document
+---
+
+# Question 1
+
+The aime of the study is to evaluate intra and interannual variability of fructification phenology and annual fruit production for a panel of 30 tree species and 15 liana species
+
+```{r}
+# package data for JAGS
+my.data <- list(Cd=Cd,
+                D=D #vector with the number of days per year (365 or 366)
+                )
+
+
+# specify the parameters to be monitored
+my.params <- c('mu_peakday',
+               'sigma_peakday', 
+               'mu_quantity',
+               'sigma_quantity',
+               'epsilon', 
+               'k')
+```
+
+```{r}
+my.model <- "
+model{
+  ## PRIORS
+  # peakday
+  mu_peakday ~ dunif(0,365) # Have the same probability to draw every day of the year
+  sigma_peakday ~ dunif(0,20)
+  tau_peakday <- 1/(sigma_peakday*sigma_peakday)
+  
+  # Quantity
+  mu_quantity ~ dlnorm(0,0.0001)
+  sigma_quantity ~ dunif(0,20)
+  tau_quantity <- 1/(sigma_quantity*sigma_quantity)
+  
+  #Sd
+  epsilon ~ dunif(0,20)
+  tau_epsilon <- 1/(epsilon*epsilon)
+  
+  #clumping parameter
+  k ~ dunif(0,100)
+
+  ## LIKELIHOOD
+  for(t in 1:10){ # for each year t
+  peakday[t] ~ dnorm(mu_peakday,tau_peakday)
+  log(quantity[t]) ~ dnorm(log(mu_quantity),log(tau_quantity))
+  for(d in 1:D[t]) { #for each day d in each year t
+    Sd[t,d]/quantity[t] ~ dnorm(peakday[t],tau_epsilon) # Equal to the formula Sd = P*Norm(peakday, epsilon) in the article
+    Cd[t,d] ~ dnbinom(Sd[t,d], k)
+  }
+  }
+  
+    
+}
+"
+```
