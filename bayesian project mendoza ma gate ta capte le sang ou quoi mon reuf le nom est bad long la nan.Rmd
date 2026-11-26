@@ -7,7 +7,9 @@ output: html_document
 
 # Question 1
 
-The aime of the study is to evaluate intra and interannual variability of fructification phenology and annual fruit production for a panel of 30 tree species and 15 liana species
+The aim of the study is to evaluate intra and interannual variability of fructification phenology and annual fruit production for a panel of 30 tree and 15 liana species.
+
+In a second approach they tried to link the dispersal mode and fruits traits with the phenology.
 
 ```{r}
 # package data for JAGS
