@@ -7,7 +7,9 @@ output: html_document
 
 ## Question 1
 
-**Briefly introduce the scientific question of the article and the data**.
+
+#### Briefly introduce the scientific question of the article and the data.
+
 
 The aim of the study is to evaluate intra and interannual variability of fructification phenology and annual fruit production for a panel of 30 tree and 15 liana species.
 
@@ -26,6 +28,7 @@ Sd is the product of the quantity of seeds produced this year and of a normal di
 They assume that the quantity of fruits varies across years according to a normal distribution with mean log(mu) and variance log(sigma). The same assumption was made for the peakday but with mean mu and variance sigma, those parameters are hyperparameters. 
 
 Each hyperparameters (mu, sigma, log(mu), log(sigma)) and k and epsilon have uninformative priors with no more information on the distribution involved found in the code or in the article.
+
 
 ```{r}
 # package data for JAGS
