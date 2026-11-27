@@ -32,10 +32,58 @@ Each hyperparameters (mu, sigma, log(mu), log(sigma)) and k and epsilon have uni
 #### Draw a DAG (Directed Acyclic Graph) of the model (or a simplified version of the model if it is too complex).
 
 ```{r}
-library(ggdag)  
-library(ggplot2)  
-theme_set(theme_dag())  
-dagify(cdt~sdt + k, sdt~pt + peakday + epsilon, pt~log_mu_quantity + log_sigma_quantity, peakday~ mu_peakday + sigma_peakday, labels = c( "cdt" = "Cd[t]", "sdt" = "Sd[t]", "k" = "agregation", "pt" = "P[t]", "peakday" = "Peakday", "mu_peakday" = "mu[Peakday]", "sigma_peakday" = "sigma[Peakday]", "epsilon" = "Espilon", "log_mu_quantity" = "log(mu[quantity])", "log_sigma_quantity" = "log(sigma[quantity])" ) ) %>% ggdag()
+library(ggdag)
+library(ggplot2)
+library(dplyr)
+
+dag <- dagify(
+  cdt ~ sdt + k,
+  sdt ~ pt + peakday + epsilon,
+  pt ~ log_mu + log_sigma,
+  peakday ~ mu + sigma,
+  labels = c(
+    cdt = "Cd[t]", sdt = "Sd[t]", k = "k",
+    pt = "P[quantity * ',' ~ t]", peakday = "Peakday[t]", epsilon = "epsilon",
+    log_mu = "log(mu[quantity])", log_sigma = "log(sigma[quantity])",
+    mu = "mu[peakday]", sigma = "sigma[peakday]"
+  ),
+  coords = list(
+    x = c(log_mu = 1.0, log_sigma = 2.0, mu = 3.0, sigma = 4.0,
+          pt = 1.5,     peakday = 3.2,   epsilon = 4.5,
+          sdt = 2.5,    k = 4.5,
+          cdt = 2.5),
+    y = c(log_mu = 4.5, log_sigma = 4.5, mu = 4.5, sigma = 4.5,
+          pt = 3,     peakday = 3,   epsilon = 3,
+          sdt = 2,    k = 1.5,
+          cdt = 0.5)
+  )
+)
+
+hyper <- c("log_mu", "log_sigma", "mu", "sigma")
+
+dag_data <- tidy_dagitty(dag) %>%
+  mutate(
+    type  = ifelse(name %in% hyper, "hyperparameters", "parameters"),
+    forme = ifelse(name %in% c("sdt", "cdt"), "carre", "cercle")
+  )
+
+ggplot(dag_data, aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_dag_edges(
+    aes(edge_colour = I(ifelse(name %in% hyper, "#D93848", "black"))),
+    end_cap = ggraph::circle(10, "mm")
+  ) +
+  geom_dag_point(aes(color = type, shape = forme), size = 25, fill = "white") +
+  geom_dag_text(aes(label = label, color = type), parse = TRUE, size = 2.5, show.legend = FALSE) +
+  scale_color_manual(name = NULL, values = c("hyperparameters" = "#D93848", "parameters" = "black")) +
+  scale_shape_manual(values = c("cercle" = 21, "carre" = 22), guide = "none") +
+  guides(color = guide_legend(override.aes = list(size = 8, shape = 21))) +
+  expand_limits(x = c(0.5 , 5), y = c(0.5 , 5)) +
+  theme_dag() +
+  theme(
+    legend.position = c(0.8, 0.1),
+    legend.text = element_text(size = 10)
+  )
+
 ```
 
 # Question 4
