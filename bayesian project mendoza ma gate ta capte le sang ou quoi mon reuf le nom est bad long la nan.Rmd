@@ -1,5 +1,5 @@
 ---
-title: "bayesian project"
+title: "Bayesian project"
 author: "Huby Youenn et Nelle Konczak"
 date: "2026-11-23"
 output: pdf_document
