@@ -2,7 +2,9 @@
 title: "bayesian project"
 author: "Huby Youenn"
 date: "2026-11-23"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ## Question 1
@@ -42,10 +44,16 @@ dag <- dagify(
   pt ~ log_mu + log_sigma,
   peakday ~ mu + sigma,
   labels = c(
-    cdt = "Cd[t]", sdt = "Sd[t]", k = "k",
-    pt = "P[quantity * ',' ~ t]", peakday = "Peakday[t]", epsilon = "epsilon",
-    log_mu = "log(mu[quantity])", log_sigma = "log(sigma[quantity])",
-    mu = "mu[peakday]", sigma = "sigma[peakday]"
+    cdt = "Cd[t]", 
+    sdt = "Sd[t]", 
+    k = "k",
+    pt = "P[quantity * ',' ~ t]", 
+    peakday = "Peakday[t]", 
+    epsilon = "epsilon",
+    log_mu = "log(mu[quantity])", 
+    log_sigma = "log(sigma[quantity])",
+    mu = "mu[peakday]", 
+    sigma = "sigma[peakday]"
   ),
   coords = list(
     x = c(log_mu = 1.0, log_sigma = 2.0, mu = 3.0, sigma = 4.0,
@@ -146,7 +154,7 @@ model{
 
 **Discuss the inference strategy chosen by the authors (which type of MCMC sampler, with how many iterations, thinning, . . . ) and interpret the different coding choices (if a code is available, look at it).**
 
-They used the Metropolis Hasting algorithm which is coherent because the model contains relatively few parameters (mu_peakday, sigma_peakday, mu_quantity,sigma_quantity,k,sigma_sd) and is easy to implementate. In this case, a Metropolis Hasting algorithm is more appropriate than a Gibbs sampling because this kind of model presents a lot of auto-correlation.
+They used the Metropolis Hasting algorithm which is coherent because the model contains relatively few parameters (mu_peakday, sigma_peakday, mu_quantity,sigma_quantity,k,epsilon) and is easy to implementate. In this case, a Metropolis Hasting algorithm is more appropriate than a Gibbs sampling because this kind of model presents a lot of auto-correlation.
 
 They fitted the model with 10 000 iterations and 1000 burn-in iterations and no thinning which could be a problem if they haven’t checked for auto-correlation of the samples. They coded the algorithm on R using the Hmisc package.
 
@@ -162,16 +170,15 @@ What we can discuss is that, to classify species in these categories they define
 
 They evaluated the number of seeds produced by each species and the interannual variability corresponding.
 
-The main advantages of this model is the interpretability of the each parameter which inform about:
+The main advantages of this model is the interpretability of each parameter that inform about:
 
-- The timing of fructification (mu)
+- The timing of fructification (mu_peakday)
 
-- The interannual variability in the peak fructification date (sigma)
+- The interannual variability in the peak fructification date (sigma_peakday)
 
 - In a single year, whether the fructification occurs in a specific moment (low epsilon) or all over the year (big epsilon)
 
-- The mean fruit quantity product across the 10 years (log(mu)) and the interannual variability of fruit production across the 10 years (log(sigma)) (these are not the same mu and sigma than those used for phenology, this can be misleading)
-
+- The mean fruit quantity product across the 10 years (log(mu)) and the interannual variability of fruit production across the 10 years (log(sigma)). These are not the same mu (mu_quantity) and sigma (sigma_quantity) than those used for phenology, which can lead to misunderstanding.
 Moreover, those parameters are easily comparable across species through their credibility intervals which may allows to assess different fruiting strategies.
 
 The model assumes that the number of seeds collected is normally distributed across days with a mean corresponding to the peakday. This assumes that fruits are produced gradually until reaching a maximum before decreasing symmetrically. It appears that fruit production may follow a different law more asymmetric like a lognormal law for example
