@@ -64,7 +64,7 @@ hyper <- c("log_mu", "log_sigma", "mu", "sigma")
 dag_data <- tidy_dagitty(dag) %>%
   mutate(
     type  = ifelse(name %in% hyper, "hyperparameters", "parameters"),
-    forme = ifelse(name %in% c("sdt", "cdt"), "carre", "cercle")
+    forme = ifelse(name %in% c("cdt"), "carre", "cercle")
   )
 
 ggplot(dag_data, aes(x = x, y = y, xend = xend, yend = yend)) +
