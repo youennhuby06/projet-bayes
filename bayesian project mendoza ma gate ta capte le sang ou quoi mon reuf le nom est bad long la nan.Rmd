@@ -2,7 +2,7 @@
 title: "bayesian project"
 author: "Huby Youenn"
 date: "2026-11-23"
-output: html_document
+output: pdf_document
 ---
 
 ## Question 1
@@ -31,10 +31,13 @@ Each hyperparameters (mu, sigma, log(mu), log(sigma)) and k and epsilon have uni
 
 #### Draw a DAG (Directed Acyclic Graph) of the model (or a simplified version of the model if it is too complex).
 
-```{r}
+```{r,echo=FALSE,warning=FALSE,message=FALSE}
 library(ggdag)
 library(ggplot2)
 library(dplyr)
+```
+
+```{r,echo=FALSE}
 
 dag <- dagify(
   cdt ~ sdt + k,
@@ -90,7 +93,8 @@ ggplot(dag_data, aes(x = x, y = y, xend = xend, yend = yend)) +
 
 **Write the model in JAGS (separating Priors and Likelihood), without actually running the code. If the model is too complex for you, at least try to write a simplified version of the model.**
 
-```{r}
+```{r,echo=TRUE,eval=FALSE}
+
 # package data for JAGS
 my.data <- list(Cd=Cd,#Daily seed count
                 D=D #vector with the number of days per year (365 or 366)
