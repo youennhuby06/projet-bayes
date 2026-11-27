@@ -44,7 +44,7 @@ dagify(cdt~sdt + k, sdt~pt + peakday + epsilon, pt~log_mu_quantity + log_sigma_q
 
 ```{r}
 # package data for JAGS
-my.data <- list(Cd=Cd,
+my.data <- list(Cd=Cd,#Daily seed count
                 D=D #vector with the number of days per year (365 or 366)
                 )
 
@@ -133,3 +133,29 @@ Another limitation could be the lack of long term data to identify interannual p
 The model can only describes what's happening and can't directly link the observed data with any environmental variable. Thus, it's hard to say anything about the interannual variability except that it exists, but the causes remain hypotheses.
 
 # Question 7
+
+**Try to suggest future directions to improve the model.**
+
+We could improve the model by modeling the quantity of fruit product by environmental variables (climate for example). It will add a layer of hierarchisation and will allows to explain the observed variance.
+
+Within a group of species having the same fruiting phenology (continue, annual, masting), we could cluster species depending on their peakday’s fruiting seasonality and observe the distribution law of their fructification based on the fruit quantity : normal, log-normal, uniform.
+
+We may expect species fruiting during the wet season producing more fruits over a longer period than species fructifying during the dry season due to water resource access.
+
+Looking at the tree scale could be interesting to assess whether the variance in intra-annual phenology is caused by the fact that individuals fructify at different timing during a short time or because each tree fructifies at the same timing during a long time. Including a variability between traps may help to identify these tendencies.
+
+# Question 8 
+
+**If there are any, propose some modifications you would have made to the choices of the authors.**
+
+For more clarity we would have named differently the hyperparameters of peakday and quantity because it’s confusing.
+
+Authors chose a normal distribution to model the seed distribution across the year. We suggest to explore different distribution such as the lognormal one. Indeed, we can imagine that some species need specific conditions (like lot of rain) for fruiting. When it happens first (beginning of the rainy season) fruits are produced massively with the accumulated ressources. But then the conditions are still here (continuing of rainy season) and the species is still able to produce fruit but to a smaller extent which lead to an asymmetrical distribution of fruits.
+
+It could be really interesting to test for each species different distribution which may indicates different patterns.
+
+# Question 9
+
+**Imagine a new application where a similar model could be used and explain how you could change it to fit to the new scientific question.**
+
+This model could be adapted in any count data periodically and continuously censused. We can imagine a sea turtle monitoring with several sites (beaches) and regular counting. The phenology of frequentation can therefore be modelized using the same approach. We can add a site effect explaining variability of phenology for a species.
