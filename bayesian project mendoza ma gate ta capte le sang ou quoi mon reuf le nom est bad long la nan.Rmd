@@ -7,7 +7,7 @@ output: pdf_document
 
 ## Question 1
 
-#### Briefly introduce the scientific question of the article and the data.
+**Briefly introduce the scientific question of the article and the data.**
 
 The aim of the study is to evaluate intra and interannual variability of fructification phenology and annual fruit production for a panel of 30 tree and 15 liana species.
 
@@ -29,7 +29,7 @@ Each hyperparameters (mu, sigma, log(mu), log(sigma)) and k and epsilon have uni
 
 # Question 3
 
-#### Draw a DAG (Directed Acyclic Graph) of the model (or a simplified version of the model if it is too complex).
+**Draw a DAG (Directed Acyclic Graph) of the model (or a simplified version of the model if it is too complex).**
 
 ```{r,echo=FALSE,warning=FALSE,message=FALSE}
 library(ggdag)
