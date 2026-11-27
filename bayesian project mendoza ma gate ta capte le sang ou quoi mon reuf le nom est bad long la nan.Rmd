@@ -144,7 +144,7 @@ We may expect species fruiting during the wet season producing more fruits over 
 
 Looking at the tree scale could be interesting to assess whether the variance in intra-annual phenology is caused by the fact that individuals fructify at different timing during a short time or because each tree fructifies at the same timing during a long time. Including a variability between traps may help to identify these tendencies.
 
-# Question 8 
+# Question 8
 
 **If there are any, propose some modifications you would have made to the choices of the authors.**
 
