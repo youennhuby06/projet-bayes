@@ -1,6 +1,6 @@
 ---
 title: "bayesian project"
-author: "Huby Youenn"
+author: "Huby Youenn et Nelle Konczak"
 date: "2026-11-23"
 output: pdf_document
 ---
