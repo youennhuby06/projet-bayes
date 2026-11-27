@@ -17,7 +17,6 @@ In a second approach they tried to link the dispersal mode and fruits traits wit
 
 #### Describe the model from the article by focusing on the distributions chosen for the priors and the likelihood, and the assumptions made.
 
-
 ```{r}
 # package data for JAGS
 my.data <- list(Cd=Cd,
@@ -69,3 +68,30 @@ model{
 }
 "
 ```
+
+
+
+# Question 3 
+#### Draw a DAG (Directed Acyclic Graph) of the model (or a simplified version of the model if it is too complex).
+```{r}
+install.packages("ggdag")
+library(ggdag)
+library(ggplot2)
+theme_set(theme_dag())
+
+dagify(cdt~sdt + k, sdt~pt + peakday + epsilon, pt~log_mu_quantity + log_sigma_quantity, peakday~ mu_peakday + sigma_peakday, 
+       labels = c(
+         "cdt" = "Cd[t]",
+         "sdt" = "Sd[t]",
+         "k" = "agregation",
+         "pt" = "P[t]",
+         "peakday" = "Peakday",
+         "mu_peakday" = "mu[Peakday]",
+         "sigma_peakday" = "sigma[Peakday]",
+         "epsilon" = "Espilon",
+         "log_mu_quantity" = "log(mu[quantity])",
+         "log_sigma_quantity" = "log(sigma[quantity])"
+       ) 
+       ) %>% 
+  ggdag()
+
