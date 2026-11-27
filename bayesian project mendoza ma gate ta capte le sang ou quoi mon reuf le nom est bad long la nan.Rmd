@@ -27,6 +27,7 @@ They assume that the quantity of fruits varies across years according to a norma
 
 Each hyperparameters (mu, sigma, log(mu), log(sigma)) and k and epsilon have uninformative priors with no more information on the distribution involved found in the code or in the article.
 
+
 # Question 4
 
 **Write the model in JAGS (separating Priors and Likelihood), without actually running the code. If the model is too complex for you, at least try to write a simplified version of the model.**
@@ -83,6 +84,7 @@ model{
 "
 ```
 
+
 # Question 5
 
 **Discuss the inference strategy chosen by the authors (which type of MCMC sampler, with how many iterations, thinning, . . . ) and interpret the different coding choices (if a code is available, look at it).**
@@ -109,11 +111,11 @@ The main advantages of this model is the interpretability of the each parameter 
 
 - The interannual variability in the peak fructification date (sigma)
 
-<!-- -->
+
 
 -  In a single year, whether the fructification occurs in a specific moment (low epsilon) or all over the year (big epsilon)
 
-<!-- -->
+
 
 - The mean fruit quantity product across the 10 years (log(mu)) and the interannual variability of fruit production across the 10 years (log(sigma)) (these are not the same mu and sigma than those used for phenology, this can be misleading)
 
@@ -122,3 +124,29 @@ Moreover, those parameters are easily comparable across species through their cr
 This model is good to identify the variability of two main processes, fructification timing and production at different temporal scales (intra or interannual). The multispecific approach allows identifying patterns of different strategies but species were not included as part of the model. Adding them may facilitate the statistical comparison of the hyperparameters.
 
 Moreover the model assumes that the number of seeds collected is normally distributed across days with a mean corresponding to the peakday. This assumes that fruits are produced gradually until reaching a maximum before decreasing symmetrically. It appears that fruit production may follow a different law more asymmetric like a lognormal law because when first fruits start to mature, a majority will fall directly while some can take a long time before reaching maturity and falling (The mango tree is a good example). Testing several distributions could be a good idea to improve the model
+
+
+# Question 3 
+#### Draw a DAG (Directed Acyclic Graph) of the model (or a simplified version of the model if it is too complex).
+```{r}
+install.packages("ggdag")
+library(ggdag)
+library(ggplot2)
+theme_set(theme_dag())
+
+dagify(cdt~sdt + k, sdt~pt + peakday + epsilon, pt~log_mu_quantity + log_sigma_quantity, peakday~ mu_peakday + sigma_peakday, 
+       labels = c(
+         "cdt" = "Cd[t]",
+         "sdt" = "Sd[t]",
+         "k" = "agregation",
+         "pt" = "P[t]",
+         "peakday" = "Peakday",
+         "mu_peakday" = "mu[Peakday]",
+         "sigma_peakday" = "sigma[Peakday]",
+         "epsilon" = "Espilon",
+         "log_mu_quantity" = "log(mu[quantity])",
+         "log_sigma_quantity" = "log(sigma[quantity])"
+       ) 
+       ) %>% 
+  ggdag()
+
