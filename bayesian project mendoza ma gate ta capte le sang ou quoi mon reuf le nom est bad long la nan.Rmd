@@ -7,9 +7,7 @@ output: html_document
 
 ## Question 1
 
-
 #### Briefly introduce the scientific question of the article and the data.
-
 
 The aim of the study is to evaluate intra and interannual variability of fructification phenology and annual fruit production for a panel of 30 tree and 15 liana species.
 
@@ -29,6 +27,9 @@ They assume that the quantity of fruits varies across years according to a norma
 
 Each hyperparameters (mu, sigma, log(mu), log(sigma)) and k and epsilon have uninformative priors with no more information on the distribution involved found in the code or in the article.
 
+# Question 4
+
+**Write the model in JAGS (separating Priors and Likelihood), without actually running the code. If the model is too complex for you, at least try to write a simplified version of the model.**
 
 ```{r}
 # package data for JAGS
@@ -81,3 +82,43 @@ model{
 }
 "
 ```
+
+# Question 5
+
+**Discuss the inference strategy chosen by the authors (which type of MCMC sampler, with how many iterations, thinning, . . . ) and interpret the different coding choices (if a code is available, look at it).**
+
+They used the Metropolis Hasting algorithm which is coherent because the model contains relatively few parameters (mu_peakday, sigma_peakday, mu_quantity,sigma_quantity,k,sigma_sd) and is easy to implementate. In this case, a Metropolis Hasting algorithm is more appropriate than a Gibbs sampling because this kind of model presents a lot of auto-correlation.
+
+They fitted the model with 10 000 iterations and 1000 burn-in iterations and no thinning which could be a problem if they haven’t checked for auto-correlation of the samples. They coded the algorithm on R using the Hmisc package.
+
+# Question 6
+
+**Discuss the results, the main advantages of the proposed model and the limitations.**
+
+They evaluated the phenology of each species and then could determined a peak of fructification during the peak of the rainy season
+
+They classified species according to their inter-annual variability in the timing of fruit production, with low, medium and high variability.
+
+What we can discuss is that, to classify species in these categories they defined arbitrary thresholds (25, 65 and 90 days). However they haven't specify whether credibility intervals were taken into account or not in the classification of species. Species which have credibility intervals crossing a threshold shouldn’t be classified in a class or another without specifying the risk of mistake.
+
+They evaluated the number of seeds produced by each species and the interannual variability corresponding.
+
+The main advantages of this model is the interpretability of the each parameter which inform about:
+
+- The timing of fructification (mu)
+
+- The interannual variability in the peak fructification date (sigma)
+
+<!-- -->
+
+-  In a single year, whether the fructification occurs in a specific moment (low epsilon) or all over the year (big epsilon)
+
+<!-- -->
+
+- The mean fruit quantity product across the 10 years (log(mu)) and the interannual variability of fruit production across the 10 years (log(sigma)) (these are not the same mu and sigma than those used for phenology, this can be misleading)
+
+Moreover, those parameters are easily comparable across species through their credibility intervals which may allows to assess different fruiting strategies.
+
+This model is good to identify the variability of two main processes, fructification timing and production at different temporal scales (intra or interannual). The multispecific approach allows identifying patterns of different strategies but species were not included as part of the model. Adding them may facilitate the statistical comparison of the hyperparameters.
+
+Moreover the model assumes that the number of seeds collected is normally distributed across days with a mean corresponding to the peakday. This assumes that fruits are produced gradually until reaching a maximum before decreasing symmetrically. It appears that fruit production may follow a different law more asymmetric like a lognormal law because when first fruits start to mature, a majority will fall directly while some can take a long time before reaching maturity and falling (The mango tree is a good example). Testing several distributions could be a good idea to improve the model
