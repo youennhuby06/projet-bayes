@@ -7,15 +7,27 @@ output: html_document
 
 ## Question 1
 
+
 #### Briefly introduce the scientific question of the article and the data.
+
 
 The aim of the study is to evaluate intra and interannual variability of fructification phenology and annual fruit production for a panel of 30 tree and 15 liana species.
 
 In a second approach they tried to link the dispersal mode and fruits traits with the phenology.
 
-## Question 2
+# Question 2
 
-#### Describe the model from the article by focusing on the distributions chosen for the priors and the likelihood, and the assumptions made.
+**Describe the model from the article by focusing on the distributions chosen for the priors and the likelihood, and the assumptions made.**
+
+For each species, the model takes the daily seed count as a response variable, modeled by a Negative Binomial distribution with a mean corresponding to the expected seed count at that day: Sd. A clumping parameter (k), which defines the shape of the distribution needs to be fit.
+
+Thus the distribution involved for the likelihood is a Negative Binomial.
+
+Sd is the product of the quantity of seeds produced this year and of a normal distribution, with the peak of fructification corresponding to the mean of the distribution. The interannual variability of the fruit production timing is given by the variance epsilon. They assume that the fruiting occurs symmetrically around a mean (peakday) with a variance to fit (epsilon).
+
+They assume that the quantity of fruits varies across years according to a normal distribution with mean log(mu) and variance log(sigma). The same assumption was made for the peakday but with mean mu and variance sigma, those parameters are hyperparameters. 
+
+Each hyperparameters (mu, sigma, log(mu), log(sigma)) and k and epsilon have uninformative priors with no more information on the distribution involved found in the code or in the article.
 
 ```{r}
 # package data for JAGS
