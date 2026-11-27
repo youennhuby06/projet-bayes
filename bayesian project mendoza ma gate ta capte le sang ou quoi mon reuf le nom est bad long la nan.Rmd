@@ -17,15 +17,23 @@ In a second approach they tried to link the dispersal mode and fruits traits wit
 
 **Describe the model from the article by focusing on the distributions chosen for the priors and the likelihood, and the assumptions made.**
 
-For each species, the model takes the daily seed count as a response variable, modeled by a Negative Binomial distribution with a mean corresponding to the expected seed count at that day: Sd. A clumping parameter (k), which defines the shape of the distribution needs to be fit.
+For each species, the model takes the daily seed count as a response variable, modeled by a Negative Binomial distribution with a mean corresponding to the expected seed count at that day (Sd).
+A clumping parameter (k), which defines the shape of the distribution needs to be fit.
 
 Thus the distribution involved for the likelihood is a Negative Binomial.
 
-Sd is the product of the quantity of seeds produced this year and of a normal distribution, with the peak of fructification corresponding to the mean of the distribution. The interannual variability of the fruit production timing is given by the variance epsilon. They assume that the fruiting occurs symmetrically around a mean (peakday) with a variance to fit (epsilon).
+Sd is the product of the quantity of seeds produced this year that fit a normal distribution, with the peak of fructification corresponding to the mean of the distribution.
+The interannual variability of the fruit production timing is given by the variance epsilon.
+They assume that the fruiting occurs symmetrically around a mean (peakday) with a variance (epsilon) to fit.
 
-They assume that the quantity of fruits varies across years according to a normal distribution with mean log(mu) and variance log(sigma). The same assumption was made for the peakday but with mean mu and variance sigma, those parameters are hyperparameters. 
+In the paper, the respective means and variances (mu, sigma, log(mu),log(sigma)) are named the same way for phenology and fruit quantity, this can lead to misunderstanding.
+So, we decided to specify whether those parameters were belonging to one or another by the index \_quantity or \_peakday.
 
-Each hyperparameters (mu, sigma, log(mu), log(sigma)) and k and epsilon have uninformative priors with no more information on the distribution involved found in the code or in the article.
+They assume that the quantity of fruits varies across years according to a normal distribution with mean log(mu) (log_mu_quantity) and variance log(sigma)(log_sigma_quantity) as parameters.
+The same assumption was made for the peakday with mean mu (mu_peakday) and variance sigma (sigma_peakday).
+Those parameters are hyperparameters.
+These hyperparameters, with k and epslion, have uninformative priors.
+We found no information in the code or in the article that specify the distribution involved.
 
 # Question 3
 
@@ -150,51 +158,66 @@ model{
 
 **Discuss the inference strategy chosen by the authors (which type of MCMC sampler, with how many iterations, thinning, . . . ) and interpret the different coding choices (if a code is available, look at it).**
 
-They used the Metropolis Hasting algorithm which is coherent because the model contains relatively few parameters (mu_peakday, sigma_peakday, mu_quantity,sigma_quantity,k,sigma_sd) and is easy to implementate. In this case, a Metropolis Hasting algorithm is more appropriate than a Gibbs sampling because this kind of model presents a lot of auto-correlation.
+They used the Metropolis Hasting algorithm which is coherent because the model contains relatively few parameters (mu_peakday, sigma_peakday, mu_quantity,sigma_quantity,k, epsilon) and is easy to implement.
+In this case, a Metropolis Hasting algorithm is more appropriate than a Gibbs sampling because our model presents a lot of auto-correlation that a Gibbs algorithm is very sensitive to.
 
-They fitted the model with 10 000 iterations and 1000 burn-in iterations and no thinning which could be a problem if they haven’t checked for auto-correlation of the samples. They coded the algorithm on R using the Hmisc package.
+They fitted the model with 10 000 iterations and 1000 burn-in iterations and no thinning which could be a problem if they haven’t checked for auto-correlation of the samples.
+We couldn't find the diagnostic in the code.
+They coded the algorithm on R using the Hmisc package.
 
 # Question 6
 
 **Discuss the results, the main advantages of the proposed model and the limitations.**
 
-They evaluated the phenology of each species and then could determined a peak of fructification during the peak of the rainy season
+#### Phenology
+
+They evaluated the phenology of each species and determined a peak of fructification during the peak of the rainy season.
 
 They classified species according to their inter-annual variability in the timing of fruit production, with low, medium and high variability.
 
-What we can discuss is that, to classify species in these categories they defined arbitrary thresholds (25, 65 and 90 days). However they haven't specify whether credibility intervals were taken into account or not in the classification of species. Species which have credibility intervals crossing a threshold shouldn’t be classified in a class or another without specifying the risk of mistake.
+What we can discuss is that, to classify species in these categories they defined arbitrary thresholds (25, 65 and 90 days).
+However they haven't specify whether credibility intervals were taken into account or not in the classification of species.
+Species which have credibility intervals crossing a threshold shouldn’t be classified in a class or another without specifying the risk of mistake.
+
+#### Quantity
 
 They evaluated the number of seeds produced by each species and the interannual variability corresponding.
 
+#### Advantages and limits
+
 The main advantages of this model is the interpretability of the each parameter which inform about:
 
-- The timing of fructification (mu)
+- The timing of fructification (mu_peakday)
 
-- The interannual variability in the peak fructification date (sigma)
+- The interannual variability in the peak fructification date (sigma_peakday)
 
 - In a single year, whether the fructification occurs in a specific moment (low epsilon) or all over the year (big epsilon)
 
-- The mean fruit quantity product across the 10 years (log(mu)) and the interannual variability of fruit production across the 10 years (log(sigma)) (these are not the same mu and sigma than those used for phenology, this can be misleading)
+- The mean fruit quantity product across the 10 years (log(mu_quantity)) and the interannual variability of fruit production across the 10 years (log(sigma_quantity)).
+  In the paper, those two means and variances are named the same, this can lead to misunderstanding.
 
 Moreover, those parameters are easily comparable across species through their credibility intervals which may allows to assess different fruiting strategies.
 
-The model assumes that the number of seeds collected is normally distributed across days with a mean corresponding to the peakday. This assumes that fruits are produced gradually until reaching a maximum before decreasing symmetrically. It appears that fruit production may follow a different law more asymmetric like a lognormal law for example
+The model assumes that the number of seeds collected is normally distributed across days with a mean corresponding to the peakday.
+This assumes that fruits are produced gradually until reaching a maximum before decreasing symmetrically.
+It appears that fruit production may follow a different law more asymmetric like a lognormal law for example
 
-Another limitation could be the lack of long term data to identify interannual patterns of fruit production, and effect of main climatic events such as El Nino and La Nina.
+Another limitation could be the lack of long term data to identify inter-annual patterns of fruit production, and effect of main climatic events such as El Nino and La Nina.
 
-The model can only describes what's happening and can't directly link the observed data with any environmental variable. Thus, it's hard to say anything about the interannual variability except that it exists, but the causes remain hypotheses.
+The model can only describe what's happening but can't directly link the observed data with any environmental variable.
+Thus, it's hard to say anything about the inter-annual variability except that it exists, the causes remain hypotheses.
 
 # Question 7
 
 **Try to suggest future directions to improve the model.**
 
-We could improve the model by modeling the quantity of fruit product by environmental variables (climate for example). It will add a layer of hierarchisation and will allows to explain the observed variance.
-
-Within a group of species having the same fruiting phenology (continue, annual, masting), we could cluster species depending on their peakday’s fruiting seasonality and observe the distribution law of their fructification based on the fruit quantity : normal, log-normal, uniform.
+We could improve the model by modeling the quantity of fruit product by environmental variables (climate such as rainfall and temperature for example).
+It will add a layer of hierarchisation and will allows to explain the observed variance.
 
 We may expect species fruiting during the wet season producing more fruits over a longer period than species fructifying during the dry season due to water resource access.
 
-Looking at the tree scale could be interesting to assess whether the variance in intra-annual phenology is caused by the fact that individuals fructify at different timing during a short time or because each tree fructifies at the same timing during a long time. Including a variability between traps may help to identify these tendencies.
+Looking at the tree scale could be interesting to assess whether the variance in intra-annual phenology is caused by the fact that individuals fructify at different timing during a short time or because each tree fructifies at the same timing during a long time.
+Including a variability between traps may help to identify these tendencies.
 
 # Question 8
 
@@ -202,12 +225,21 @@ Looking at the tree scale could be interesting to assess whether the variance in
 
 For more clarity we would have named differently the hyperparameters of peakday and quantity because it’s confusing.
 
-Authors chose a normal distribution to model the seed distribution across the year. We suggest to explore different distribution such as the lognormal one. Indeed, we can imagine that some species need specific conditions (like lot of rain) for fruiting. When it happens first (beginning of the rainy season) fruits are produced massively with the accumulated ressources. But then the conditions are still here (continuing of rainy season) and the species is still able to produce fruit but to a smaller extent which lead to an asymmetrical distribution of fruits.
+Authors chose a normal distribution to model the seed distribution across the year.
+We suggest to explore different distribution such as the lognormal one.
+Indeed, we can imagine that some species need specific conditions (like lot of rain) for fruiting.
+When it happens first (beginning of the rainy season) fruits are produced massively with the accumulated ressources.
+But then the conditions are still here (continuing of rainy season) and the species is still able to produce fruit but to a smaller extent which lead to an asymmetrical distribution of fruits.
 
 It could be really interesting to test for each species different distribution which may indicates different patterns.
+
+Within a group of species having the same fruiting phenology (continue, annual, masting), we could cluster species depending on their peakday’s fruiting seasonality and observe the distribution of their fructification based on the fruit quantity.
 
 # Question 9
 
 **Imagine a new application where a similar model could be used and explain how you could change it to fit to the new scientific question.**
 
-This model could be adapted in any count data periodically and continuously censused. We can imagine a sea turtle monitoring with several sites (beaches) and regular counting. The phenology of frequentation can therefore be modelized using the same approach. We can add a site effect explaining variability of phenology for a species.
+This model could be adapted in any count data periodically and continuously censused.
+We can imagine a sea turtle monitoring with several sites (beaches) and regular counting.
+The phenology of frequentation can therefore be modelized using the same approach.
+We can add a site effect explaining variability of phenology for a species.
